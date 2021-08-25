@@ -5,6 +5,10 @@ using System.IO;
 namespace GaleShapley
 {
     // Propose and Reject Algorithm
+    // A stable matching algorithm deeply rooted in 1950's relationship logic, but it always finds a perfect/stable matching.
+    // Note that the solution tends to be biased towards the male preferences.
+    // By swapping all references between male and females, then the solution will be biased towards females.
+    // At most there will be a total of n*(n-1)+1 proposals. A soap opera of a friend group making proposals :)
     class Program
     {
         static void Main(string[] args)
@@ -17,14 +21,14 @@ namespace GaleShapley
             // Process the male preferences
             Queue<string> bachelors = new Queue<string>();
             Dictionary<string, string[]> malePreferences = new Dictionary<string, string[]>();
-            Dictionary<string, int> maleProposals = new Dictionary<string, int>();
+            Dictionary<string, int> numProposals = new Dictionary<string, int>();
             foreach (string line in male_lines)
             {
                 string maleName = line.Split("-")[0];
                 string[] malePreferenceList = line.Split("-")[1].Split(",");
                 bachelors.Enqueue(maleName);
                 malePreferences[maleName] = malePreferenceList;
-                maleProposals[maleName] = 0;
+                numProposals[maleName] = 0;
             }
 
             // Process the female preferences
@@ -49,35 +53,35 @@ namespace GaleShapley
             // While there is still a man without a partner who has not proposed to every woman
             while (bachelors.Count != 0)
             {
-                string elligibleBachelor = bachelors.Dequeue();
+                string bachelor = bachelors.Dequeue();
 
                 // Find the next women he has not proposed to on his preference list
-                int numProposals = maleProposals[elligibleBachelor];
-                string potentialFiance = malePreferences[elligibleBachelor][numProposals];
+                int proposals = numProposals[bachelor];
+                string potentialFiance = malePreferences[bachelor][proposals];
                 string currentPartner = engagements[potentialFiance];
 
                 // If they are not engaged then the proposal succeeds
                 if (currentPartner == null)
                 {
-                    engagements[potentialFiance] = elligibleBachelor;
+                    engagements[potentialFiance] = bachelor;
                 }
                 else
                 {
-                    int bachelorsRank = femalePreferences[potentialFiance][elligibleBachelor];
+                    int bachelorsRank = femalePreferences[potentialFiance][bachelor];
                     int currentPartnerRank = femalePreferences[potentialFiance][currentPartner];
                     // Otherwise if the woman prefers the proposer to her current partner, the proposal succeeds
                     if (bachelorsRank < currentPartnerRank)
                     {
                         bachelors.Enqueue(currentPartner);
-                        engagements[potentialFiance] = elligibleBachelor;
+                        engagements[potentialFiance] = bachelor;
                     }
                     // Otherwise she rejects him.
                     else
                     {
-                        bachelors.Enqueue(elligibleBachelor);
+                        bachelors.Enqueue(bachelor);
                     }
                 }
-                maleProposals[elligibleBachelor] += 1; 
+                numProposals[bachelor] += 1; 
             }
 
             foreach ((string female, string male) in engagements)
