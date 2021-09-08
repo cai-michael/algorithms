@@ -18,7 +18,7 @@ namespace IntervalProblems
         public bool checkAvailability(Class classToCheck)
         {
             bool available = false;
-            if (classToCheck.start < this.mostRecentClassEnd)
+            if (classToCheck.start >= this.mostRecentClassEnd)
             {
                 available = true;
             }
@@ -39,7 +39,7 @@ namespace IntervalProblems
             {
                 toPrint += lecture.name + ", ";
             }
-            toPrint = toPrint.TrimEnd(",");
+            toPrint = toPrint.Substring(0, toPrint.Length - 2);
             return toPrint;
         }
     }
