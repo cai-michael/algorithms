@@ -2,12 +2,12 @@ using System.Collections.Generic;
 
 namespace IntervalProblems
 {
-    public class Job
+    public class Class
     {
         public string name;
         public int start;
         public int end;
-        public Job(string name, int start, int end)
+        public Class(string name, int start, int end)
         {
             this.name = name;
             this.start = start;
@@ -15,16 +15,16 @@ namespace IntervalProblems
         }
     }
 
-    // Compare jobs by their end time in Interval scheduling
-    public class JobComparer : IComparer<Job>
+    // Compare the start of classes for interval partitioning. 
+    public class ClassComparer : IComparer<Class>
     {
-        public int Compare(Job a, Job b)
+        public int Compare(Class a, Class b)
         {
-            if (a.end == b.end)
+            if (a.start == b.start)
             {
                 return 0;
             }
-            else if (a.end < b.end)
+            else if (a.start < b.start)
             {
                 return -1;
             }     
